@@ -1,0 +1,89 @@
+from dotenv import load_dotenv
+load_dotenv()
+
+from crewai import Agent, Task, Crew, LLM
+
+
+# -------------------------
+# 1. Create the LLM
+# -------------------------
+
+llm = LLM(
+    model="gpt-4o-mini"
+)
+
+
+# -------------------------
+# 2. Create the Agent
+# -------------------------
+
+travel_agent = Agent(
+    role="Travel Planner",
+
+    goal="Plan efficient and enjoyable travel experiences.",
+
+    backstory=(
+        "You are a seasoned travel expert with a passion for "
+        "creating unique and memorable travel experiences. "
+    ),
+
+    llm=llm,
+
+    verbose=True
+)
+
+print("Travel Planner ready!")
+
+
+# -------------------------
+# 3. Create the Task
+# -------------------------
+
+travel_task = Task(
+
+    description=(
+        "Create a one-day travel experience for Hyderabad, India. "
+        "The traveler wants to visit 3 interesting places in one day. "
+        "Arrange the places in a practical order and explain what "
+        "the traveler can do at each place."
+    ),
+
+    expected_output=(
+        "A detailed one-day Hyderabad travel experience containing "
+        "3 places, the recommended order of visit and activities at each place."
+    ),
+
+    agent=travel_agent
+)
+
+print("Task ready!")
+
+
+# -------------------------
+# 4. Create the Crew
+# -------------------------
+
+crew = Crew(
+    agents=[travel_agent],
+    tasks=[travel_task],
+    verbose=True
+)
+
+
+# -------------------------
+# 5. Run the Crew
+# -------------------------
+
+result = crew.kickoff()
+
+
+# -------------------------
+# 6. Print the result
+# -------------------------
+
+print("\n===== TRAVEL PLAN =====\n")
+
+
+
+
+print(result)
